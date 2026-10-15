@@ -1,0 +1,299 @@
+ROLE AND OBJECTIVE
+
+Act as a multidisciplinary team consisting of a professional scientific 3D artist, entomologist, comparative anatomist, Three.js/WebGL engineer, scientific illustrator, and UI/UX designer.
+
+Create a complete, publication-quality interactive 3D Butterfly Anatomy Atlas for advanced biology education and scientific communication. This must be a real, working web application, not a static mockup.
+
+CORE TECHNOLOGY
+
+Use:
+- HTML5, CSS3, JavaScript ES modules.
+- Three.js for actual interactive 3D rendering.
+- OrbitControls for intuitive rotation, panning, and zooming.
+- GLTF/GLB loading for high-quality anatomical models when available.
+- A reliable skeletal or procedural animation system for wing movement.
+- Raycasting for selecting individual 3D anatomical structures.
+- SVG or dynamically rendered HTML overlays for precise leader lines and labels.
+- Optional GSAP for polished transitions.
+- Vite for development and production builds.
+
+Choose a robust implementation that can run locally. Include all source files, package.json, asset instructions, and a README. Never pretend that unavailable external assets already exist.
+
+SCIENTIFIC SPECIES AND ACCURACY
+
+Choose a clearly identified, scientifically documented butterfly species as the primary specimen. Prefer a species with well-documented external and internal anatomy and suitable high-quality 3D references.
+
+Display its scientific name, taxonomic classification, and the source of the anatomical references.
+
+Prioritize anatomical accuracy over visual spectacle. Use realistic proportions, segmentation, wing venation, appendages, exoskeleton, scales, and material properties. Do not create a cartoon, toy, fantasy insect, generic mechanical insect, or low-poly approximation.
+
+If a fully photorealistic rigged 3D asset is unavailable, construct a credible 3D specimen from modular geometry and properly sourced assets. Clearly distinguish scientifically accurate modeled structures from schematic or illustrative representations. Do not describe a schematic as a photorealistic dissection.
+
+VISUAL ART DIRECTION
+
+- Pure white background (#FFFFFF).
+- Sophisticated scientific editorial design suitable for a high-end biology journal.
+- Photorealistic specimen with rich, naturally occurring pigments and structural colors.
+- Vivid but biologically plausible color accents for anatomical layers.
+- Realistic PBR materials, subtle surface roughness, natural reflections, delicate shadows, and studio-quality lighting.
+- Clean, minimal typography with excellent readability.
+- Generous white space, restrained UI chrome, precise spacing, and elegant information hierarchy.
+- Thin, refined leader lines with small anchor points.
+- No childish illustrations, cartoon eyes, oversized anatomy, excessive gradients, cluttered dashboards, or unnecessary decorative elements.
+
+The butterfly must remain the visual centerpiece.
+
+LAYOUT
+
+Build a polished responsive interface with:
+
+1. A slim header with the atlas title, species name, search, and view settings.
+2. A large central 3D viewport.
+3. Small, unobtrusive floating controls for rotation, zoom, animation, reset, and explode/reassemble.
+4. A collapsible anatomy navigation panel organized by anatomical system.
+5. Minimal floating labels connected to the actual selected structures.
+6. A compact scientific information panel with the structure name, function, anatomical location, and references.
+7. A discreet legend indicating visible, transparent, isolated, and schematic anatomical structures.
+8. An unobtrusive timeline or progress indicator for guided dissection.
+
+Keep the specimen large and visually dominant. Avoid covering the anatomy with text.
+
+REAL 3D ANATOMICAL SPECIMEN
+
+Create a coherent, detailed, three-dimensional butterfly with anatomically credible geometry and independent selectable components.
+
+The specimen must be viewed from multiple angles. Support smooth orbiting, panning, zooming, perspective changes, and predefined anatomical camera views.
+
+The model must not be a flat photograph placed in a 3D scene. Use actual 3D geometry, appropriate depth, realistic lighting, and independent components.
+
+If the best available model is external, provide clear asset attribution, license information, download instructions, and a fallback strategy.
+
+ANATOMICAL COVERAGE
+
+Build a detailed hierarchical anatomy browser. Include all applicable structures supported by the selected species and reliable references.
+
+A. External morphology
+- Head, thorax, abdomen.
+- Dorsal, ventral, lateral, anterior, and posterior views.
+- Exoskeleton and major body regions.
+- Segmentation and external landmarks.
+- Sexual dimorphism when applicable.
+
+B. Head and sensory organs
+- Compound eyes, ommatidial organization where appropriate.
+- Ocelli, if present in the selected species.
+- Antennal scape, pedicel, flagellum, and segments.
+- Antennal clubs or species-specific terminal structures.
+- Labrum, labial palps, proboscis, and relevant mouthparts.
+- Proboscis coiling and extension, where supported by the model.
+
+C. Thorax and locomotion
+- Prothorax, mesothorax, metathorax.
+- Prothoracic, mesothoracic, and metathoracic regions.
+- Forewings and hindwings.
+- Forelegs, midlegs, hindlegs.
+- Coxa, trochanter, femur, tibia, tarsomeres, pretarsus, and claws.
+- Wing articulation and attachment regions.
+
+D. Wings
+- Forewing and hindwing, each independently selectable.
+- Dorsal and ventral wing surfaces.
+- Major veins using an appropriate recognized venation nomenclature.
+- Costal, radial, medial, cubital, and anal vein systems as applicable.
+- Crossveins and cells where identifiable.
+- Wing margins, apex, termen, and tornus.
+- Color patterns, eyespots, and pattern elements where relevant.
+- Scales and scale arrangement.
+- Wing membrane and supporting structures.
+- Wing-base structures and relevant articulations.
+
+E. Internal anatomy
+- Flight muscles and their attachment regions.
+- Digestive tract: foregut, crop where applicable, midgut, hindgut, and associated structures.
+- Hemolymphatic system and dorsal vessel.
+- Nervous system: brain, subesophageal ganglion, ventral nerve cord, and segmental ganglia.
+- Tracheal respiratory system, tracheae, and spiracles.
+- Reproductive system with male and female anatomical variants where appropriate.
+- Fat body and other major documented tissues.
+- Excretory structures, including Malpighian tubules.
+- Additional structures supported by species-specific anatomical evidence.
+
+Do not imply that every structure can be observed directly in an intact adult. Internal organs must appear through a clearly labeled virtual dissection, cutaway, or transparent-body view. Never invent the exact internal positions of organs without evidence.
+
+3D EXPLODED DISSECTION
+
+This is a central feature, not a decorative afterthought.
+
+Implement a smooth, controllable exploded view in which anatomical components move apart in a logical order while preserving their spatial orientation.
+
+Requirements:
+- Begin with an intact butterfly.
+- Progress from the whole organism to the major body regions.
+- Separate head, thorax, abdomen, wings, legs, and antennae.
+- Allow deeper dissection into substructures and organ systems.
+- Provide a continuous explosion slider and predefined dissection stages.
+- Keep the movement vectors anatomically sensible and avoid arbitrary scattering.
+- Preserve meaningful relative orientation and visual correspondence.
+- Add smooth easing, staggered movement, and clear transitions.
+- Allow individual parts to be isolated, hidden, faded, or restored.
+- Include a one-click reassembly animation.
+- Prevent components from disappearing off-screen.
+- Update leader lines and labels throughout the animation.
+
+Support both exploded external anatomy and a separate internal virtual dissection mode.
+
+REALISTIC WING-FLAPPING ANIMATION
+
+Provide a prominent button labeled "Flap Wings".
+
+The wing motion must be believable for a living butterfly, not a robotic hinge or a flat image rotating back and forth.
+
+Requirements:
+- Animate the forewings and hindwings with coordinated, species-informed motion.
+- Use plausible wing articulation around the wing bases.
+- Model the movement as a time-dependent three-dimensional rotation with appropriate phase relationships, amplitude, and easing.
+- Avoid perfectly uniform sinusoidal movement that appears mechanical.
+- Allow starting, stopping, and changing playback speed.
+- Provide a slow-motion mode for observing wing kinematics.
+- Add subtle body stabilization and appropriate antenna or leg movement only when justified.
+- Prevent the wings from intersecting the body or each other unnaturally.
+- Ensure the animation remains smooth under different frame rates.
+- Allow the user to inspect the specimen from different camera angles while the wings flap.
+- Explain that the animation is illustrative if it is not calibrated against measured species-specific kinematic data.
+
+HOVER AND SELECTION MICRO-INTERACTIONS
+
+Every selectable anatomical component should support:
+- A subtle hover highlight.
+- A refined outline or restrained emissive accent.
+- A small tooltip with the anatomical name.
+- A smooth camera focus transition when selected.
+- A clear selected state that differs from hover.
+- An animated leader line that connects the structure to its label.
+- A concise information panel with scientific terminology and function.
+
+Clicking a structure must select the actual 3D object using raycasting. Do not simulate selection with unrelated static buttons.
+
+Use restrained, elegant motion. Avoid flashing, excessive bouncing, or distracting effects.
+
+SCIENTIFIC LABELS AND DESCRIPTIONS
+
+Each anatomical entry should provide:
+- Preferred scientific name.
+- Common name where applicable.
+- Anatomical hierarchy.
+- Location and relationship to neighboring structures.
+- Primary biological function.
+- Relevant morphological or physiological details.
+- Species-specific notes where supported.
+- Source citations or references.
+- Confidence or evidence classification when useful.
+
+Use concise labels on the 3D model and more detailed descriptions in the information panel.
+
+Keep labels readable at every zoom level. Avoid line crossings, overlapping labels, and ambiguous anchor points. Dynamically reposition or hide labels when necessary.
+
+Provide a search field that can locate an anatomical structure, focus the camera, highlight the component, and display its description.
+
+GUIDED EXPLORATION
+
+Create a guided, step-by-step dissection experience:
+
+1. Whole butterfly overview.
+2. External morphology.
+3. Head and sensory structures.
+4. Thorax and flight apparatus.
+5. Forewings and hindwings.
+6. Legs and appendages.
+7. Abdomen.
+8. Internal organ systems.
+9. Comparative anatomy and summary.
+
+Each step should have a short explanation, a suggested camera view, highlighted structures, and a next/previous navigation system.
+
+Allow users to exit guided mode at any time and freely explore the model.
+
+CAMERA AND TRANSITIONS
+
+Implement:
+- Smooth zoom in and zoom out.
+- Focus-on-selection.
+- Orbit around the selected structure.
+- Predefined dorsal, ventral, lateral, anterior, and posterior views.
+- Fit-to-specimen and reset-camera controls.
+- Smooth transitions between intact, exploded, isolated, and internal views.
+- Appropriate near and far clipping planes.
+- Responsive camera behavior and sensible zoom limits.
+
+Use easing that feels precise and scientific, not like a game menu.
+
+COLOR AND MATERIAL SYSTEM
+
+Maintain the white background while using a rich, coherent palette for visual differentiation.
+
+Use realistic biological colors on the intact butterfly. For virtual dissection, use consistent, restrained colors that distinguish organ systems without implying false natural pigmentation.
+
+Include a small legend. Preserve the original specimen colors whenever the user returns to the intact view.
+
+Avoid assigning arbitrary colors to anatomical structures without indicating that the colors are visualization aids.
+
+PERFORMANCE AND ACCESSIBILITY
+
+- Target smooth rendering on typical modern desktop computers.
+- Use sensible polygon counts, texture resolutions, and lighting.
+- Load heavy assets progressively.
+- Show loading progress and meaningful error messages.
+- Handle missing assets gracefully.
+- Dispose of unused GPU resources where appropriate.
+- Pause expensive animation when the tab is not visible.
+- Support responsive layouts and keyboard navigation.
+- Include accessible labels and visible focus states.
+- Respect reduced-motion preferences where feasible.
+- Provide a static fallback if WebGL is unavailable.
+- Do not let a failed external asset silently produce an empty viewport.
+
+SCIENTIFIC INTEGRITY AND REFERENCES
+
+Use reliable entomology textbooks, peer-reviewed research, museum collections, and documented scientific 3D assets.
+
+Never fabricate citations, DOIs, experimental observations, species-specific measurements, or anatomical claims.
+
+Separate verified anatomical information from explanatory visualization. Include an in-app bibliography and an asset attribution section.
+
+Make clear which structures are directly modeled, which are simplified, and which are schematic.
+
+DELIVERABLES
+
+Create a complete, runnable project with:
+- index.html
+- src/main.js or equivalent modular source files
+- src/style.css
+- Organized anatomy data files
+- Reusable 3D scene and interaction modules
+- package.json and configuration
+- README with installation and launch instructions
+- Asset download and attribution instructions
+- A description of anatomical assumptions and known limitations
+- A short manual testing checklist
+
+Do not return pseudocode, disconnected snippets, a static HTML mockup, or an interface whose controls do nothing.
+
+IMPLEMENTATION WORKFLOW
+
+Phase 1: Establish the species, scientific scope, asset strategy, and technical architecture.
+Phase 2: Build the functional 3D scene and specimen.
+Phase 3: Implement anatomical selection, labels, and camera controls.
+Phase 4: Implement exploded views, internal dissection, and reassembly.
+Phase 5: Implement realistic wing animation and polished interactions.
+Phase 6: Add scientific descriptions, references, accessibility, and responsive behavior.
+Phase 7: Test all controls, validate asset paths, fix console errors, and document the final application.
+
+Start by inspecting the available project files and runtime environment. If working inside an existing repository, preserve useful existing work and integrate the new implementation cleanly.
+
+Do not stop after writing a plan. Implement the application, run it, test it, and fix failures where the environment allows.
+
+FINAL QUALITY BAR
+
+The finished product should resemble a premium interactive scientific museum exhibit combined with a peer-reviewed anatomical atlas.
+
+It must combine genuine 3D depth, scientifically defensible anatomy, elegant visual design, and meaningful interaction. Scientific correctness and working behavior take priority over visual claims that cannot be supported.

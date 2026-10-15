@@ -1,0 +1,14 @@
+butterfly-anatomy-atlas/
+├── package.json
+├── vite.config.js
+├── index.html
+├── README.md
+└── src/
+    ├── style.css
+    ├── main.js
+    ├── data/
+    │   └── anatomyData.js
+    └── three/
+        ├── TextureGenerator.js
+        ├── ButterflyBuilder.js
+        └── KinematicsEngine.js

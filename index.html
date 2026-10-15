@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lepidoptera 3D Anatomical Atlas — Danaus plexippus (Linnaeus, 1758)</title>
+  <link rel="stylesheet" href="./src/style.css" />
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/"
+      }
+    }
+  </script>
+</head>
+<body>
+  <!-- TOP EDITORIAL HEADER -->
+  <header class="atlas-header" role="banner">
+    <div class="header-brand">
+      <span class="journal-tag">COMPARATIVE ARTHROPOD MORPHOLOGY ATLAS</span>
+      <div class="title-row">
+        <h1><em>Danaus plexippus</em> <span class="author-citation">(Linnaeus, 1758)</span></h1>
+        <span class="common-badge">Monarch Butterfly · Nymphalidae: Danainae</span>
+      </div>
+    </div>
+
+    <div class="header-search-wrap" role="search">
+      <label for="structure-search" class="sr-only">Search anatomical structures</label>
+      <input
+        id="structure-search"
+        type="search"
+        placeholder="Search anatomy (e.g., Proboscis, Discal cell, Dorsal vessel, Malpighian)..."
+        autocomplete="off"
+        aria-autocomplete="list"
+        aria-controls="search-results-list"
+      />
+      <ul id="search-results-list" class="search-dropdown hidden" role="listbox"></ul>
+    </div>
+
+    <div class="header-actions">
+      <div class="segmented-control" role="group" aria-label="Specimen Sex Dimorphism">
+        <button id="sex-male-btn" class="seg-btn active" type="button" title="Male specimen (with hindwing CuA2 androconial patch & male reproductive tract)">♂ Male</button>
+        <button id="sex-female-btn" class="seg-btn" type="button" title="Female specimen (broader venation, absent scent patch, bursa copulatrix & ovaries)">♀ Female</button>
+      </div>
+
+      <div class="camera-presets" role="group" aria-label="Anatomical Camera Views">
+        <button class="cam-btn" data-view="dorsal" type="button" title="Dorsal View">Dorsal</button>
+        <button class="cam-btn" data-view="ventral" type="button" title="Ventral View">Ventral</button>
+        <button class="cam-btn" data-view="lateral" type="button" title="Right Lateral View">Lateral</button>
+        <button class="cam-btn" data-view="anterior" type="button" title="Anterior (Frontal) View">Anterior</button>
+        <button class="cam-btn" data-view="posterior" type="button" title="Posterior View">Posterior</button>
+      </div>
+
+      <button id="btn-references" class="secondary-btn" type="button" aria-haspopup="dialog">
+        References &amp; Scope
+      </button>
+    </div>
+  </header>
+
+  <!-- MAIN WORKSPACE -->
+  <main class="atlas-workspace">
+    <!-- LEFT COLLAPSIBLE ANATOMY HIERARCHY BROWSER -->
+    <aside id="left-drawer" class="side-panel left-panel" aria-label="Anatomical Systems Browser">
+      <div class="panel-header">
+        <div>
+          <h2>Anatomical Systems</h2>
+          <p class="panel-subtitle">Select structures or toggle layer opacity</p>
+        </div>
+        <button id="toggle-left-drawer" class="icon-btn" type="button" aria-label="Collapse Anatomy Browser" title="Toggle Panel">
+          ⟨
+        </button>
+      </div>
+
+      <div class="dissection-mode-bar" role="group" aria-label="Dissection Render Mode">
+        <button class="mode-pill active" data-mode="intact" type="button">Intact</button>
+        <button class="mode-pill" data-mode="cutaway" type="button">Internal Cutaway</button>
+        <button class="mode-pill" data-mode="schematic" type="button">System Color Aid</button>
+      </div>
+
+      <div id="anatomy-tree" class="anatomy-tree" role="tree" aria-label="Hierarchical Butterfly Anatomy"></div>
+    </aside>
+
+    <button id="reopen-left-drawer" class="drawer-tab left-tab hidden" type="button" aria-label="Open Anatomy Browser">
+      Anatomy Systems ⟩
+    </button>
+
+    <!-- CENTRAL 3D VIEWPORT -->
+    <section class="viewport-container" aria-label="Interactive 3D Butterfly Specimen Viewport">
+      <canvas id="webgl-canvas" tabindex="0" aria-label="3D Anatomical Model of Danaus plexippus"></canvas>
+
+      <!-- SVG DYNAMIC LEADER LINE OVERLAY -->
+      <svg id="leader-svg" class="leader-overlay" aria-hidden="true"></svg>
+
+      <!-- HTML FLOATING ANATOMICAL CALLOUT PINS -->
+      <div id="callout-layer" class="callout-layer"></div>
+
+      <!-- HOVER TOOLTIP -->
+      <div id="hover-tooltip" class="hover-tooltip hidden" role="status" aria-live="polite"></div>
+
+      <!-- LOADING & ERROR BANNER -->
+      <div id="loading-overlay" class="loading-overlay">
+        <div class="loader-card">
+          <div class="spinner"></div>
+          <p id="loading-status">Synthesizing 3D Cuticular Geometry &amp; Venation Maps...</p>
+        </div>
+      </div>
+
+      <div id="webgl-fallback" class="webgl-fallback hidden" role="alert">
+        <h2>WebGL Rendering Context Unavailable</h2>
+        <p>Your browser or hardware does not currently expose a WebGL context. Please enable hardware acceleration to inspect the 3D anatomical specimen of <em>Danaus plexippus</em>.</p>
+      </div>
+
+      <!-- TOP-LEFT FLOATING LEGEND & TAXONOMY SUMMARY -->
+      <div class="viewport-legend" aria-label="Visualization Fidelity Legend">
+        <div class="legend-title">EVIDENCE &amp; STATE LEGEND</div>
+        <div class="legend-items">
+          <span class="legend-item"><i class="dot dot-modeled"></i> Directly Modeled</span>
+          <span class="legend-item"><i class="dot dot-simplified"></i> Simplified 3D</span>
+          <span class="legend-item"><i class="dot dot-schematic"></i> Schematic Internal</span>
+          <span class="legend-item"><i class="dot dot-isolated"></i> Selected / Isolated</span>
+        </div>
+        <div class="label-density-row">
+          <label class="checkbox-label">
+            <input type="checkbox" id="toggle-all-pins" checked />
+            <span>Show Landmark Callouts</span>
+          </label>
+          <label class="checkbox-label">
+            <input type="checkbox" id="toggle-proboscis-ext" />
+            <span>Unfurl Proboscis</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- BOTTOM FLOATING KINEMATICS & EXPLODED DISSECTION DOCK -->
+      <div class="floating-dock" role="toolbar" aria-label="3D Kinematics and Dissection Controls">
+        <!-- Primary Flap Wings Control -->
+        <div class="dock-section kinematics-group">
+          <button id="btn-flap-wings" class="primary-action-btn" type="button" aria-pressed="false">
+            <span class="flap-indicator"></span>
+            <span id="flap-btn-text">Flap Wings</span>
+          </button>
+
+          <div class="speed-control">
+            <label for="flap-speed-select">Kinematics</label>
+            <select id="flap-speed-select" aria-label="Wing Flapping Playback Speed">
+              <option value="1.0">1.0× Natural (~10 Hz)</option>
+              <option value="0.25">0.25× Slow Motion</option>
+              <option value="0.08">0.08× Kinematic Analysis</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="dock-divider"></div>
+
+        <!-- Exploded Dissection Slider & Stage Presets -->
+        <div class="dock-section explosion-group">
+          <div class="slider-header">
+            <label for="explode-slider">3D Exploded Dissection</label>
+            <span id="explode-readout" class="mono-badge">0% (Intact)</span>
+          </div>
+          <input
+            id="explode-slider"
+            type="range"
+            min="0"
+            max="100"
+            step="1"
+            value="0"
+            aria-label="Continuous 3D Exploded Dissection Slider"
+          />
+          <div class="stage-chips" role="group" aria-label="Dissection Stage Presets">
+            <button class="chip-btn" data-explode="0" type="button" title="Reassemble Intact Specimen">Intact (0%)</button>
+            <button class="chip-btn" data-explode="35" type="button" title="Separate Primary Tagmata (Head, Thorax, Abdomen)">Tagmata (35%)</button>
+            <button class="chip-btn" data-explode="70" type="button" title="Separate Appendages & Wings">Appendages (70%)</button>
+            <button class="chip-btn" data-explode="100" type="button" title="Full Internal Organ & Sclerite Separation">Full Dissection (100%)</button>
+          </div>
+        </div>
+
+        <div class="dock-divider"></div>
+
+        <!-- Viewport Reset & Isolation Actions -->
+        <div class="dock-section utility-group">
+          <button id="btn-isolate" class="dock-btn" type="button" disabled title="Isolate selected anatomical structure">
+            Isolate Selected
+          </button>
+          <button id="btn-reassemble" class="dock-btn" type="button" title="One-click reassembly and restore all hidden parts">
+            Reassemble &amp; Reset
+          </button>
+        </div>
+      </div>
+
+      <!-- GUIDED EXPLORATION STEPPER BAR -->
+      <div class="guided-tour-bar" role="region" aria-label="Guided 9-Step Anatomical Dissection Tour">
+        <div class="tour-header-row">
+          <span class="tour-badge">GUIDED DISSECTION TOUR</span>
+          <span id="tour-step-counter" class="tour-counter">Step 1 of 9</span>
+          <div class="tour-progress-dots" id="tour-dots" role="tablist"></div>
+          <button id="btn-exit-tour" class="text-btn" type="button">Free Exploration</button>
+        </div>
+        <div class="tour-body-row">
+          <div class="tour-copy">
+            <h3 id="tour-title">1. Whole Organism Overview</h3>
+            <p id="tour-description">Loading guided tour step...</p>
+          </div>
+          <div class="tour-nav-btns">
+            <button id="btn-tour-prev" class="secondary-btn" type="button">← Previous</button>
+            <button id="btn-tour-next" class="secondary-btn primary-tint" type="button">Next Step →</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- RIGHT SCIENTIFIC INFORMATION INSPECTOR PANEL -->
+    <aside id="right-drawer" class="side-panel right-panel" aria-label="Anatomical Structure Dossier">
+      <div class="panel-header">
+        <div>
+          <span id="info-system-tag" class="system-kicker">SPECIMEN OVERVIEW</span>
+          <h2 id="info-title"><em>Danaus plexippus</em></h2>
+          <p id="info-subtitle" class="info-latin">Adult Imago · Nymphalidae</p>
+        </div>
+        <button id="toggle-right-drawer" class="icon-btn" type="button" aria-label="Collapse Inspector Panel">
+          ⟩
+        </button>
+      </div>
+
+      <div class="inspector-scroll">
+        <div class="meta-badges">
+          <span id="info-evidence-badge" class="evidence-badge">Directly Modeled</span>
+          <span id="info-hierarchy-badge" class="hierarchy-badge">Hexapoda : Lepidoptera</span>
+        </div>
+
+        <div class="structure-visibility-controls">
+          <button id="btn-focus-structure" class="small-action-btn" type="button">Focus Camera</button>
+          <button id="btn-toggle-vis" class="small-action-btn" type="button">Hide Structure</button>
+          <button id="btn-fade-vis" class="small-action-btn" type="button">Translucent (25%)</button>
+        </div>
+
+        <section class="dossier-section">
+          <h3>Primary Biological Function</h3>
+          <p id="info-function"></p>
+        </section>
+
+        <section class="dossier-section">
+          <h3>Anatomical Location &amp; Topology</h3>
+          <p id="info-location"></p>
+        </section>
+
+        <section class="dossier-section">
+          <h3>Morphological &amp; Physiological Details</h3>
+          <p id="info-morphology"></p>
+        </section>
+
+        <section class="dossier-section">
+          <h3><em>Danaus plexippus</em> Species Notes</h3>
+          <p id="info-species-notes"></p>
+        </section>
+
+        <section class="dossier-section citation-box">
+          <h3>Primary Literature Citations</h3>
+          <ul id="info-citations" class="citation-list"></ul>
+        </section>
+      </div>
+    </aside>
+
+    <button id="reopen-right-drawer" class="drawer-tab right-tab hidden" type="button" aria-label="Open Inspector Panel">
+      ⟨ Structure Details
+    </button>
+  </main>
+
+  <!-- SCIENTIFIC BIBLIOGRAPHY, ASSET ATTRIBUTION & METHODOLOGY MODAL -->
+  <div id="references-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h2 id="modal-title">Scientific References, Methodology &amp; 3D Asset Attribution</h2>
+        <button id="close-references-modal" class="icon-btn" type="button" aria-label="Close modal">✕</button>
+      </div>
+      <div class="modal-content">
+        <section class="modal-block">
+          <h3>1. Anatomical Modeling Scope &amp; Epistemic Transparency</h3>
+          <p>
+            To uphold scientific integrity, this atlas distinguishes between three tiers of anatomical representation:
+          </p>
+          <ul>
+            <li><strong>Directly Modeled (Morphometric):</strong> External tagmata (head capsule, pro-/meso-/metathorax, 10-segmented abdomen), Comstock–Needham wing venation ($Sc, R_1\text{–}R_5, M_1\text{–}M_3, CuA_1\text{–}CuA_2, 1A+2A, 3A$, and discal cell), sexually dimorphic male $CuA_2$ androconial patch, clubbed antennae, and nymphalid reduced prothoracic forelegs are constructed directly from published morphometric proportions of <em>Danaus plexippus</em> (Ehrlich, 1958).</li>
+            <li><strong>Simplified 3D Reconstruction:</strong> Indirect flight musculature (dorsolongitudinal muscles $DLMs$ and dorsoventral muscles $DVMs$) and endocuticular phragmata represent volumetric functional blocks demonstrating thoracic indirect flight mechanics.</li>
+            <li><strong>Schematic Topographical Organ Models:</strong> Internal visceral systems (digestive tract, Malpighian tubules, dorsal tubular heart, supra-/subesophageal and ventral ganglia, tracheal trunks, and male/female reproductive tracts) are 3D schematic reconstructions positioned according to dissecting-microscope atlases (Eaton, 1988; Scoble, 1992). They are not derived from micro-CT volumetric scans.</li>
+          </ul>
+          <p>
+            <strong>Wing Kinematics Note:</strong> The interactive wing-flapping engine models coupled three-axis Euler rotations (flapping elevation/depression, spanwise pronation/supination feathering, and lead-lag sweep) alongside thoraco-abdominal pitch counter-oscillation at ~10 Hz (Betts &amp; Wootton, 1988). While biologically grounded in free-flight high-speed cinematography of papilionoid butterflies, the waveform is an analytical kinematic synthesis rather than raw motion-capture telemetry.
+          </p>
+        </section>
+
+        <section class="modal-block">
+          <h3>2. Custom GLTF/GLB Specimen Loader</h3>
+          <p>
+            By default, the atlas synthesizes a multi-part parametric 3D specimen with 28 independent selectable meshes and procedural 2048×2048 PBR wing venation textures. Researchers with micro-CT or photogrammetry `.glb`/`.gltf` meshes can load them directly below or place `danaus_plexippus.glb` inside `/public/models/`:
+          </p>
+          <div class="glb-upload-box">
+            <label for="glb-file-input" class="secondary-btn">Load Custom .GLB / .GLTF Specimen</label>
+            <input id="glb-file-input" type="file" accept=".glb,.gltf" class="hidden" />
+            <span id="glb-status-text" class="glb-note">Active Specimen: Built-in Parametric <em>Danaus plexippus</em> (28 Segmented Meshes)</span>
+          </div>
+        </section>
+
+        <section class="modal-block">
+          <h3>3. Peer-Reviewed Literature &amp; Taxonomic Bibliography</h3>
+          <ol class="bib-list">
+            <li><strong>Ehrlich, P. R. (1958).</strong> The integumental anatomy of the monarch butterfly <em>Danaus plexippus</em> L. (Lepidoptera: Danaiidae). <em>University of Kansas Science Bulletin</em>, 38(18), 1315–1349.</li>
+            <li><strong>Eaton, J. L. (1988).</strong> <em>Lepidopteran Anatomy</em>. John Wiley &amp; Sons, New York. ISBN: 978-0471058625.</li>
+            <li><strong>Scoble, M. J. (1992).</strong> <em>The Lepidoptera: Form, Function and Diversity</em>. Oxford University Press / Natural History Museum, London.</li>
+            <li><strong>Snodgrass, R. E. (1935).</strong> <em>Principles of Insect Morphology</em>. McGraw-Hill Book Company, New York.</li>
+            <li><strong>Chapman, R. F. (2013).</strong> <em>The Insects: Structure and Function</em> (5th ed., eds. S. J. Simpson &amp; A. E. Douglas). Cambridge University Press.</li>
+            <li><strong>Betts, C. R., &amp; Wootton, R. J. (1988).</strong> Wing shape and flight behaviour in butterflies (Lepidoptera: Papilionoidea and Hesperioidea): a preliminary analysis. <em>Journal of Experimental Biology</em>, 138(1), 271–288.</li>
+            <li><strong>Krenn, H. W. (2010).</strong> Feeding mechanisms of adult Lepidoptera: structure, function, and evolution of the mouthparts. <em>Annual Review of Entomology</em>, 55, 307–327.</li>
+            <li><strong>Ghiradella, H. (1991).</strong> Light and color on the wing: structural colors in butterflies and moths. <em>Applied Optics</em>, 30(24), 3492–3500.</li>
+          </ol>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="./src/main.js"></script>
+</body>
+</html>
